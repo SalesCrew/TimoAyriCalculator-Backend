@@ -93,6 +93,19 @@ function isAllowedVercelOrigin(origin: string) {
   }
 }
 
+function isAllowedLocalOrigin(origin: string) {
+  try {
+    const url = new URL(origin);
+
+    return (
+      ["http:", "https:"].includes(url.protocol) &&
+      ["localhost", "127.0.0.1", "::1", "[::1]"].includes(url.hostname)
+    );
+  } catch {
+    return false;
+  }
+}
+
 export async function buildApp(options: BuildAppOptions = {}) {
   const gateway = options.gateway ?? createSupabaseGateway();
   const bootstrapAdminToken =
@@ -111,7 +124,8 @@ export async function buildApp(options: BuildAppOptions = {}) {
       if (
         !origin ||
         allowedOrigins.includes(origin) ||
-        isAllowedVercelOrigin(origin)
+        isAllowedVercelOrigin(origin) ||
+        isAllowedLocalOrigin(origin)
       ) {
         callback(null, true);
         return;

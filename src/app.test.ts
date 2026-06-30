@@ -275,6 +275,21 @@ describe("Ayri backend smoke tests", () => {
     expect(response.headers["access-control-allow-origin"]).toBe(origin);
   });
 
+  it("allows localhost origins through CORS for local frontend testing", async () => {
+    const origin = "http://localhost:3003";
+    const response = await app.inject({
+      headers: {
+        "access-control-request-method": "GET",
+        origin,
+      },
+      method: "OPTIONS",
+      url: "/v1/drink-types",
+    });
+
+    expect(response.statusCode).toBe(204);
+    expect(response.headers["access-control-allow-origin"]).toBe(origin);
+  });
+
   it("creates public invitation requests", async () => {
     const response = await app.inject({
       method: "POST",
