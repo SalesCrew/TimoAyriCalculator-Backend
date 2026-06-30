@@ -195,8 +195,8 @@ Design-Prinzipien:
 2. Frontend-Foundation:
    - App Shell
    - Theme
-   - Mock-Leaderboard
-   - Drink-Submit UI mit Mock-State
+   - Live-Leaderboard
+   - Drink-Submit UI gegen Backend
 3. Auth-UI:
    - Login
    - Registrierung
