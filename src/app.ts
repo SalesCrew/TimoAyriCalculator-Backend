@@ -83,6 +83,16 @@ function serializeUser(user: AuthenticatedUser) {
   };
 }
 
+function isAllowedVercelOrigin(origin: string) {
+  try {
+    const url = new URL(origin);
+
+    return url.protocol === "https:" && url.hostname.endsWith(".vercel.app");
+  } catch {
+    return false;
+  }
+}
+
 export async function buildApp(options: BuildAppOptions = {}) {
   const gateway = options.gateway ?? createSupabaseGateway();
   const bootstrapAdminToken =
@@ -98,7 +108,11 @@ export async function buildApp(options: BuildAppOptions = {}) {
   await app.register(cors, {
     credentials: true,
     origin(origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (
+        !origin ||
+        allowedOrigins.includes(origin) ||
+        isAllowedVercelOrigin(origin)
+      ) {
         callback(null, true);
         return;
       }

@@ -260,6 +260,21 @@ describe("Ayri backend smoke tests", () => {
     });
   });
 
+  it("allows Vercel deployment origins through CORS", async () => {
+    const origin = "https://timoayricalculator.vercel.app";
+    const response = await app.inject({
+      headers: {
+        "access-control-request-method": "GET",
+        origin,
+      },
+      method: "OPTIONS",
+      url: "/v1/drink-types",
+    });
+
+    expect(response.statusCode).toBe(204);
+    expect(response.headers["access-control-allow-origin"]).toBe(origin);
+  });
+
   it("creates public invitation requests", async () => {
     const response = await app.inject({
       method: "POST",
