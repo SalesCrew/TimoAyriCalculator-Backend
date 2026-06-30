@@ -1,4 +1,5 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import ws from "ws";
 
 import { ApiError } from "../errors.js";
 import { env, hasSupabaseConfig } from "../env.js";
@@ -15,6 +16,11 @@ import {
 } from "../types.js";
 import { fallbackDrinkTypes } from "./drink-seed.js";
 import { generateTemporaryPassword } from "./password.js";
+
+type SupabaseOptions = NonNullable<Parameters<typeof createClient>[2]>;
+type RealtimeOptions = NonNullable<SupabaseOptions["realtime"]>;
+
+const nodeWebSocket = ws as unknown as RealtimeOptions["transport"];
 
 type DbProfile = {
   display_name: string;
@@ -632,6 +638,9 @@ export function createSupabaseGateway() {
     auth: {
       autoRefreshToken: false,
       persistSession: false,
+    },
+    realtime: {
+      transport: nodeWebSocket,
     },
   });
 
